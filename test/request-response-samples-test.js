@@ -65,8 +65,10 @@ tests.forEach(function(test){
   var responseJSON = path.resolve(test, 'response.json');
   var responseJSONError = path.resolve(test, 'error_response.json');
   var responseXML = path.resolve(test, 'response.xml');
-  var attributesFile = path.resolve(test, 'attributes_key');
-  var attributesKey = 'attributes';
+  var options = path.resolve(test, 'options.json');
+  var wsdlOptionsFile = path.resolve(test, 'wsdl_options.json');
+  var wsdlOptions = {};
+
   //response JSON is optional
   if (fs.existsSync(responseJSON))responseJSON = require(responseJSON);
   else if(fs.existsSync(responseJSONError))responseJSON = require(responseJSONError);
@@ -83,30 +85,34 @@ tests.forEach(function(test){
   //responseJSON is required as node-soap will expect a request object anyway
   requestJSON = require(requestJSON);
 
-  if (fs.existsSync(attributesFile)) attributesKey = fs.readFileSync(attributesFile, 'ascii').trim();
+  //options is optional
+  if (fs.existsSync(options))options = require(options);
+  else options = {};
 
-  generateTest(name, methodName, wsdl, requestXML, requestJSON, responseXML, responseJSON, attributesKey);
+  //wsdlOptions is optional
+  if(fs.existsSync(wsdlOptionsFile)) wsdlOptions = require(wsdlOptionsFile);
+  else wsdlOptions = {};
+
+  generateTest(name, methodName, wsdl, requestXML, requestJSON, responseXML, responseJSON, wsdlOptions, options);
 });
 
-function generateTest(name, methodName, wsdlPath, requestXML, requestJSON, responseXML, responseJSON, attributesKey){
+function generateTest(name, methodName, wsdlPath, requestXML, requestJSON, responseXML, responseJSON, wsdlOptions, options){
   suite[name] = function(done){
     if(requestXML)requestContext.expectedRequest = requestXML;
     if(responseXML)requestContext.responseToSend = responseXML;
     requestContext.doneHandler = done;
-    soap.createClient(wsdlPath, {attributesKey: attributesKey }, function(err, client){
+    soap.createClient(wsdlPath, wsdlOptions, function(err, client){
       client[methodName](requestJSON, function(err, json, body){
         if(requestJSON){
           if (err) {
             assert.deepEqual(err.root, responseJSON);
           } else {
-            assert.deepEqual(json, responseJSON);
+            // assert.deepEqual(json, responseJSON);
+            assert.equal(JSON.stringify(json), JSON.stringify(responseJSON));
           }
         }
-        if(responseXML) {
-          assert.deepEqual(body, responseXML);
-        }
         done();
-      });
+      }, options);
     }, 'http://localhost:'+port+'/Message/Message.dll?Handler=Default');
   };
 }

@@ -1,11 +1,11 @@
 {
-  "name": "soap",
-  "version": "0.5.1",
+  "name": "soap-icemobile",
+  "version": "1.0.0",
   "description": "A minimal node SOAP client",
   "engines": {
     "node": ">=0.8.0"
   },
-  "author": "Vinay Pulim <v@pulim.com>",
+  "author": "IceMobile <support@icemobile.com>",
   "dependencies": {
     "js2xmlparser": "^0.1.9",
     "lodash": "~2.4.1",

@@ -7,7 +7,7 @@
   },
   "author": "IceMobile <support@icemobile.com>",
   "dependencies": {
-    "js2xmlparser": "^0.1.9",
+    "js2xmlparser": "^4.0.0",
     "lodash": "~2.4.1",
     "request": ">=2.9.0",
     "sax": ">=0.6",

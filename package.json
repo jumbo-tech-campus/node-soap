@@ -35,9 +35,9 @@
     }
   ],
   "devDependencies": {
-    "mocha": "~1.17.0",
+    "mocha": "1.17.1",
     "jshint": "2.3.0",
-    "glob": "~3.2.8",
-    "should": "~3.3.0"
+    "glob": "3.2.11",
+    "should": "3.3.2"
   }
 }
